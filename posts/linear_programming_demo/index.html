@@ -1,0 +1,150 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Linear Programming Demo - Jun Choi</title><meta property="og:title" content="Linear Programming Demo - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1613535736" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>Linear Programming Demo</h1><p><b>Posted
+at <time>2020-05-07 13:09:00</time>
+in
+<a href=/categories/python>Python</a></b>
+• 5 minute read<br>Tags:
+<a href=/tags/scipy>scipy</a>, <a href=/tags/linprog>linprog</a>, <a href=/tags/sympy>sympy</a></p><div><p>There are many python packages that we can use to solve linear programming problems. We will be using scipy&rsquo;s linprog method.</p><p>Read more here: <a href=https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linprog.html>https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linprog.html</a></p><h2 id=example-1>Example 1</h2><p>A farmer has 240 acres of land. An acre of corn will yield 40 USD in profit while an acre of oats will yield 30 USD in profit. He has 320 hours available to work on his farm. An acre of corn requires 2 hours of labor while an acre of oats requres only 1 hour of labor. How many acres of each should be planted to maximize profits?</p><p>Let <em>x</em> = acres of corn and <em>y</em> = acres of oat.</p><p>Objective function:</p><p>$$
+40x + 30y
+$$</p><p>Land available:</p><p>$$
+x + y ≤ 240
+$$</p><p>Hours available:</p><p>$$
+2x + y ≤ 320
+$$</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>scipy.optimize</span> <span class=kn>import</span> <span class=n>linprog</span>
+<span class=kn>import</span> <span class=nn>numpy</span> <span class=kn>as</span> <span class=nn>np</span>
+
+<span class=n>var_list</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;corn&#39;</span><span class=p>,</span><span class=s1>&#39;oat&#39;</span><span class=p>]</span> <span class=c1># X matrix</span>
+
+<span class=n>A_ineq</span> <span class=o>=</span> <span class=p>[[</span><span class=mi>2</span><span class=p>,</span><span class=mi>1</span><span class=p>],[</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>]]</span> <span class=c1># Inequality equations, LHS</span>
+<span class=n>B_ineq</span> <span class=o>=</span> <span class=p>[[</span><span class=mi>320</span><span class=p>,</span><span class=mi>240</span><span class=p>]]</span> <span class=c1># Inequality equations, RHS</span>
+
+<span class=c1># Equality equations are left blank since we do not have any</span>
+<span class=n>A_eq</span> <span class=o>=</span> <span class=p>[[]]</span> <span class=c1># Equality equations, LHS</span>
+<span class=n>B_eq</span> <span class=o>=</span> <span class=p>[[]]</span> <span class=c1># Equality equations, RHS</span>
+
+<span class=c1># Objective function coefficients are negative because</span>
+<span class=c1># linprog method by default minimizes the objective function and</span>
+<span class=c1># max(f(x)) = -min(-f(x))</span>
+<span class=n>obj_fun</span> <span class=o>=</span> <span class=p>[</span><span class=o>-</span><span class=mi>40</span><span class=p>,</span><span class=o>-</span><span class=mi>30</span><span class=p>]</span> <span class=c1># Objective function</span>
+
+<span class=n>res_no_bounds</span> <span class=o>=</span> <span class=n>linprog</span><span class=p>(</span><span class=n>c</span><span class=o>=</span><span class=n>obj_fun</span><span class=p>,</span> <span class=n>A_ub</span><span class=o>=</span><span class=n>A_ineq</span><span class=p>,</span> <span class=n>b_ub</span><span class=o>=</span><span class=n>B_ineq</span><span class=p>,</span> <span class=n>method</span><span class=o>=</span><span class=s1>&#39;simplex&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>res_no_bounds</span><span class=p>)</span>
+
+<span class=c1># Optimization result shown in &#39;x&#39;</span>
+<span class=c1># Farmer should plant 80 acres of corn and 160 acres of oat</span>
+</code></pre></div><pre><code>     con: array([], dtype=float64)
+     fun: -8000.0
+ message: 'Optimization terminated successfully.'
+     nit: 3
+   slack: array([0., 0.])
+  status: 0
+ success: True
+       x: array([ 80., 160.])
+</code></pre><h2 id=example-2>Example 2</h2><p>A concrete company transports concrete from three plants 1, 2, and 3, to three contruction sites, A, B, and C.</p><p>The plants are able to supply the following numbers of tons per week:</p><table><thead><tr><th><strong>Plant</strong></th><th><strong>Supply</strong></th></tr></thead><tbody><tr><td>1</td><td>100</td></tr><tr><td>2</td><td>300</td></tr><tr><td>3</td><td>300</td></tr></tbody></table><p> </p><p>The requirements of the sites, in number of tons per week are:</p><table><thead><tr><th><strong>Site</strong></th><th><strong>Demand</strong></th></tr></thead><tbody><tr><td>A</td><td>300</td></tr><tr><td>B</td><td>200</td></tr><tr><td>C</td><td>200</td></tr></tbody></table><p>Since sum of demand and sum of supply are equal, this is a <em>balanced</em> problem.</p><p>The cost of transporting 1 ton of concrete from each plant to each site is shown in the figure below.</p><table><thead><tr><th></th><th><strong>A</strong></th><th><strong>B</strong></th><th><strong>C</strong></th><th><strong>Supply</strong></th></tr></thead><tbody><tr><td><strong>1</strong></td><td>5</td><td>4</td><td>3</td><td>100</td></tr><tr><td><strong>2</strong></td><td>8</td><td>4</td><td>3</td><td>300</td></tr><tr><td><strong>3</strong></td><td>9</td><td>7</td><td>5</td><td>300</td></tr><tr><td><strong>Demand</strong></td><td>300</td><td>200</td><td>200</td><td>-</td></tr></tbody></table><p> </p><p>Objective Function:</p><p>$$
+5x_{1A} + 4x_{1B} + 3x_{1C} + 8x_{2A} + 4x_{2B} + 3x_{2C} + 9x_{3A} + 7x_{3B} + 5x_{3c}
+$$</p><p> </p><p>Supply Contraints:</p><p>$$
+x_{1A} + x_{1B} + x_{1C} = 100
+$$</p><p>$$
+x_{2A} + x_{2B} + x_{2C} = 300
+$$</p><p>$$
+x_{3A} + x_{3B} + x_{3C} = 300
+$$</p><p> </p><p>Demand Contraints:</p><p>$$
+x_{1A} + x_{2A} + x_{3A} = 300
+$$</p><p>$$
+x_{1B} + x_{2B} + x_{3B} = 200
+$$</p><p>$$
+x_{1C} + x_{2C} + x_{3C} = 200
+$$</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Declaring X matrix variables</span>
+
+<span class=n>plants</span> <span class=o>=</span> <span class=s1>&#39;123&#39;</span>
+<span class=n>sites</span> <span class=o>=</span> <span class=s1>&#39;abc&#39;</span>
+
+<span class=n>var_list</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;x&#39;</span><span class=o>+</span><span class=n>p</span><span class=o>+</span><span class=n>s</span> <span class=k>for</span> <span class=n>p</span> <span class=ow>in</span> <span class=n>plants</span> <span class=k>for</span> <span class=n>s</span> <span class=ow>in</span> <span class=n>sites</span><span class=p>]</span> <span class=c1># X matrix</span>
+<span class=n>var_list</span>
+</code></pre></div><pre><code>['x1a', 'x1b', 'x1c', 'x2a', 'x2b', 'x2c', 'x3a', 'x3b', 'x3c']
+</code></pre><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Inequality equations are left blank since we do not have any</span>
+<span class=n>A_ineq</span> <span class=o>=</span> <span class=p>[]</span> <span class=c1># Inequality equations, LHS</span>
+<span class=n>B_ineq</span> <span class=o>=</span> <span class=p>[]</span> <span class=c1># Inequality equations, RHS</span>
+
+<span class=n>A_eq</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=p>[</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>]</span>
+<span class=p>]</span> <span class=c1># Equality equations, LHS</span>
+<span class=n>B_eq</span> <span class=o>=</span> <span class=p>[[</span><span class=mi>100</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>200</span><span class=p>,</span><span class=mi>200</span><span class=p>]]</span> <span class=c1># Equality equations, RHS</span>
+
+<span class=n>obj_fun</span> <span class=o>=</span> <span class=p>[</span><span class=mi>5</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>8</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>9</span><span class=p>,</span><span class=mi>7</span><span class=p>,</span><span class=mi>5</span><span class=p>]</span> <span class=c1># Objective function</span>
+
+<span class=n>res_no_bounds</span> <span class=o>=</span> <span class=n>linprog</span><span class=p>(</span><span class=n>c</span><span class=o>=</span><span class=n>obj_fun</span><span class=p>,</span> <span class=n>A_eq</span><span class=o>=</span><span class=n>A_eq</span><span class=p>,</span> <span class=n>b_eq</span><span class=o>=</span><span class=n>B_eq</span><span class=p>,</span> <span class=n>method</span><span class=o>=</span><span class=s1>&#39;simplex&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>res_no_bounds</span><span class=p>)</span>
+</code></pre></div><pre><code>     con: array([0., 0., 0., 0., 0., 0.])
+     fun: 3900.0
+ message: 'Optimization terminated successfully.'
+     nit: 7
+   slack: array([], dtype=float64)
+  status: 0
+ success: True
+       x: array([100.,   0.,   0.,   0., 200., 100., 200.,   0., 100.])
+
+
+C:\Users\junsc\AppData\Local\Continuum\anaconda3\lib\site-packages\scipy\optimize\_linprog_util.py:763: OptimizeWarning: A_eq does not appear to be of full row rank. To improve performance, check the problem formulation for redundant equality constraints.
+  warn(redundancy_warning, OptimizeWarning)
+</code></pre><p>Optimization result in table form:</p><table><thead><tr><th></th><th><strong>A</strong></th><th><strong>B</strong></th><th><strong>C</strong></th><th><strong>Supply</strong></th></tr></thead><tbody><tr><td><strong>1</strong></td><td>100</td><td>0</td><td>0</td><td>100</td></tr><tr><td><strong>2</strong></td><td>0</td><td>200</td><td>100</td><td>300</td></tr><tr><td><strong>3</strong></td><td>200</td><td>0</td><td>100</td><td>300</td></tr><tr><td><strong>Demand</strong></td><td>300</td><td>200</td><td>200</td><td>-</td></tr></tbody></table><p>You may notice below warning:</p><pre><code>OptimizeWarning: A_eq does not appear to be of full row rank. To improve performance, check the problem formulation for redundant equality constraints.
+  warn(redundancy_warning, OptimizeWarning)
+</code></pre><p>To check which constraints are redundant, we can find the reduced row echelon form of A_eq matrix to see which equations are redundant constraints.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Using synmpy to find reduced row echelon form of A_eq</span>
+
+<span class=kn>import</span> <span class=nn>sympy</span>
+<span class=n>A_eq_check</span> <span class=o>=</span> <span class=n>sympy</span><span class=o>.</span><span class=n>Matrix</span><span class=p>(</span><span class=n>A_eq</span><span class=p>)</span>
+<span class=n>A_eq_check</span><span class=o>.</span><span class=n>rref</span><span class=p>()</span>
+</code></pre></div><pre><code>(Matrix([
+ [1, 0, 0, 0, -1, -1, 0, -1, -1],
+ [0, 1, 0, 0,  1,  0, 0,  1,  0],
+ [0, 0, 1, 0,  0,  1, 0,  0,  1],
+ [0, 0, 0, 1,  1,  1, 0,  0,  0],
+ [0, 0, 0, 0,  0,  0, 1,  1,  1],
+ [0, 0, 0, 0,  0,  0, 0,  0,  0]]), (0, 1, 2, 3, 6))
+</code></pre><p>We see that the last equation is the redundant constraint.</p><p>If we run the same code without this redundant constraint, we will not get the redundancy warning message, and our result will remain the same.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>A_eq</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=p>[</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>1</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>],</span>
+    <span class=p>[</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>,</span><span class=mi>0</span><span class=p>]</span>
+    <span class=c1>#[0,0,1,0,0,1,0,0,1] Redundant constraint removed</span>
+<span class=p>]</span> <span class=c1># Equality equations, LHS</span>
+<span class=n>B_eq</span> <span class=o>=</span> <span class=p>[[</span><span class=mi>100</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>300</span><span class=p>,</span><span class=mi>200</span><span class=p>]]</span> <span class=c1># RHS for redundant constraint removed</span>
+
+<span class=n>obj_fun</span> <span class=o>=</span> <span class=p>[</span><span class=mi>5</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>8</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>9</span><span class=p>,</span><span class=mi>7</span><span class=p>,</span><span class=mi>5</span><span class=p>]</span> <span class=c1># Objective function</span>
+
+<span class=n>res_no_bounds</span> <span class=o>=</span> <span class=n>linprog</span><span class=p>(</span><span class=n>c</span><span class=o>=</span><span class=n>obj_fun</span><span class=p>,</span> <span class=n>A_eq</span><span class=o>=</span><span class=n>A_eq</span><span class=p>,</span> <span class=n>b_eq</span><span class=o>=</span><span class=n>B_eq</span><span class=p>,</span> <span class=n>method</span><span class=o>=</span><span class=s1>&#39;simplex&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>res_no_bounds</span><span class=p>)</span>
+</code></pre></div><pre><code>     con: array([0., 0., 0., 0., 0.])
+     fun: 3900.0
+ message: 'Optimization terminated successfully.'
+     nit: 9
+   slack: array([], dtype=float64)
+  status: 0
+ success: True
+       x: array([100.,   0.,   0.,   0., 200., 100., 200.,   0., 100.])
+</code></pre></div></article></main><div class=next-prev><a class=next href=https://junschoi.github.io/posts/partition_k_equal_subsets/ title="Partition to K Equal Sum Subsets">Partition to K Equal Sum Subsets »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li><li><a href=/posts/partition_k_equal_subsets/>Partition to K Equal Sum Subsets</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

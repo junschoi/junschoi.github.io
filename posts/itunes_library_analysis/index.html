@@ -1,0 +1,312 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>iTunes Library Data Analysis using Python - Jun Choi</title><meta property="og:title" content="iTunes Library Data Analysis using Python - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1613535736" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>iTunes Library Data Analysis using Python</h1><p><b>Posted
+at <time>2020-12-29 02:09:00</time>
+in
+<a href=/categories/python>Python</a></b>
+• 7 minute read<br>Tags:
+<a href=/tags/xml>xml</a>, <a href=/tags/defaultdict>defaultdict</a>, <a href=/tags/matplotlib>matplotlib</a></p><div><p>If you use iTunes to listen to your music, you can export your iTunes library data as an XML file!</p><ol><li>Open iTunes</li><li>File > Export Library&mldr;</li><li>Save the file at your desired directory</li></ol><p><figure><img src=https://i.imgur.com/KtGPF0f.png alt=iTunes_screenshot></figure></p><p>There are many ways to parse an XML file, but in this demo, I will be using <code>xml.etree.ElementTree</code> module to parse it. You can read more about the module here: <a href=https://docs.python.org/3/library/xml.etree.elementtree.html>https://docs.python.org/3/library/xml.etree.elementtree.html</a></p><p>If you open the XML file with a text editor, you will see that the data inside the XML file is structured like the screenshot below.</p><p><figure><img src=https://i.imgur.com/igCdevO.png alt=XML_screenshot></figure></p><h1 id=parsing-itunes-xml-file-with-python>Parsing iTunes XML file with Python</h1><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Importing libraries</span>
+<span class=kn>import</span> <span class=nn>pandas</span> <span class=kn>as</span> <span class=nn>pd</span>
+<span class=kn>import</span> <span class=nn>numpy</span> <span class=kn>as</span> <span class=nn>np</span>
+<span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=kn>as</span> <span class=nn>plt</span>
+<span class=kn>import</span> <span class=nn>matplotlib.font_manager</span> <span class=kn>as</span> <span class=nn>fm</span>
+<span class=kn>import</span> <span class=nn>matplotlib</span>
+<span class=kn>from</span> <span class=nn>matplotlib.ticker</span> <span class=kn>import</span> <span class=n>FormatStrFormatter</span>
+<span class=kn>from</span> <span class=nn>xml.etree</span> <span class=kn>import</span> <span class=n>ElementTree</span> <span class=k>as</span> <span class=n>ET</span>
+<span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>defaultdict</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Accessing data content</span>
+<span class=n>tree</span> <span class=o>=</span> <span class=n>ET</span><span class=o>.</span><span class=n>parse</span><span class=p>(</span><span class=s1>&#39;Library.xml&#39;</span><span class=p>)</span>
+<span class=n>root</span> <span class=o>=</span> <span class=n>tree</span><span class=o>.</span><span class=n>getroot</span><span class=p>()</span>
+</code></pre></div><p><code>root[0]</code> will allow us to access contents of <code>root</code></p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Exploring contents of root</span>
+<span class=n>root_lst</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>x</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>]):</span>
+    <span class=n>root_lst</span><span class=o>.</span><span class=n>append</span><span class=p>([</span><span class=n>x</span><span class=o>.</span><span class=n>text</span><span class=p>,</span> <span class=n>x</span><span class=o>.</span><span class=n>tag</span><span class=p>])</span>
+
+<span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>(</span><span class=n>root_lst</span><span class=p>,</span> <span class=n>columns</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;text&#39;</span><span class=p>,</span> <span class=s1>&#39;tag&#39;</span><span class=p>])</span>
+</code></pre></div><div><style scoped>.dataframe tbody tr th:only-of-type{vertical-align:middle}<pre><code>.dataframe tbody tr th{vertical-align:top}.dataframe thead th{text-align:right}</code></pre><p></style></p><table border=1 class=dataframe><thead><tr style=text-align:right><th></th><th>text</th><th>tag</th></tr></thead><tbody><tr><th>0</th><td>Major Version</td><td>key</td></tr><tr><th>1</th><td>1</td><td>integer</td></tr><tr><th>2</th><td>Minor Version</td><td>key</td></tr><tr><th>3</th><td>1</td><td>integer</td></tr><tr><th>4</th><td>Date</td><td>key</td></tr><tr><th>5</th><td>2020-12-27T21:49:35Z</td><td>date</td></tr><tr><th>6</th><td>Application Version</td><td>key</td></tr><tr><th>7</th><td>12.11.0.26</td><td>string</td></tr><tr><th>8</th><td>Features</td><td>key</td></tr><tr><th>9</th><td>5</td><td>integer</td></tr><tr><th>10</th><td>Show Content Ratings</td><td>key</td></tr><tr><th>11</th><td>None</td><td>true</td></tr><tr><th>12</th><td>Music Folder</td><td>key</td></tr><tr><th>13</th><td>file://localhost/C:/Users/junsc/Music/iTunes/i...</td><td>string</td></tr><tr><th>14</th><td>Library Persistent ID</td><td>key</td></tr><tr><th>15</th><td>64B0A8775DD8CA31</td><td>string</td></tr><tr><th>16</th><td>Tracks</td><td>key</td></tr><tr><th>17</th><td>\n\t\t</td><td>dict</td></tr><tr><th>18</th><td>Playlists</td><td>key</td></tr><tr><th>19</th><td>\n\t\t</td><td>array</td></tr></tbody></table></div><p>Next, I will be accessing contents of &ldquo;Tracks&rdquo; node, which contains all the tracks and its data. You will see that each track data is stored in every odd numbered index of &ldquo;Tracks&rdquo; node.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Exploring &#34;Tracks&#34; node</span>
+
+<span class=n>track_lst</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>]:</span>
+    <span class=n>track_lst</span><span class=o>.</span><span class=n>append</span><span class=p>([</span><span class=n>x</span><span class=o>.</span><span class=n>text</span><span class=p>,</span> <span class=n>x</span><span class=o>.</span><span class=n>tag</span><span class=p>])</span>
+
+<span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>(</span><span class=n>track_lst</span><span class=p>,</span> <span class=n>columns</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;text&#39;</span><span class=p>,</span> <span class=s1>&#39;tag&#39;</span><span class=p>])</span>
+</code></pre></div><div><style scoped>.dataframe tbody tr th:only-of-type{vertical-align:middle}<pre><code>.dataframe tbody tr th{vertical-align:top}.dataframe thead th{text-align:right}</code></pre><p></style></p><table border=1 class=dataframe><thead><tr style=text-align:right><th></th><th>text</th><th>tag</th></tr></thead><tbody><tr><th>0</th><td>2571</td><td>key</td></tr><tr><th>1</th><td>\n\t\t\t</td><td>dict</td></tr><tr><th>2</th><td>2573</td><td>key</td></tr><tr><th>3</th><td>\n\t\t\t</td><td>dict</td></tr><tr><th>4</th><td>2575</td><td>key</td></tr><tr><th>...</th><td>...</td><td>...</td></tr><tr><th>13443</th><td>\n\t\t\t</td><td>dict</td></tr><tr><th>13444</th><td>16015</td><td>key</td></tr><tr><th>13445</th><td>\n\t\t\t</td><td>dict</td></tr><tr><th>13446</th><td>16017</td><td>key</td></tr><tr><th>13447</th><td>\n\t\t\t</td><td>dict</td></tr></tbody></table><p>13448 rows × 2 columns</p></div><p>Next, we will be parsing the contents inside the first track dict.</p><p><figure><img src=https://i.imgur.com/nkFsdpW.png alt=song_content></figure></p><p>Similarly to the &ldquo;Tracks&rdquo; node, you will see that the name of each track feature is stored in even indices while the actual value of each track feature is stored in odd indices.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Exploring contents of the first track dict</span>
+
+<span class=n>song_lst</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=mi>1</span><span class=p>]:</span> <span class=c1># [1] because we are parsing only the first track</span>
+    <span class=n>song_lst</span><span class=o>.</span><span class=n>append</span><span class=p>([</span><span class=n>x</span><span class=o>.</span><span class=n>text</span><span class=p>,</span> <span class=n>x</span><span class=o>.</span><span class=n>tag</span><span class=p>])</span>
+
+<span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>(</span><span class=n>song_lst</span><span class=p>,</span> <span class=n>columns</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;text&#39;</span><span class=p>,</span> <span class=s1>&#39;tag&#39;</span><span class=p>])</span>
+</code></pre></div><div><style scoped>.dataframe tbody tr th:only-of-type{vertical-align:middle}<pre><code>.dataframe tbody tr th{vertical-align:top}.dataframe thead th{text-align:right}</code></pre><p></style></p><table border=1 class=dataframe><thead><tr style=text-align:right><th></th><th>text</th><th>tag</th></tr></thead><tbody><tr><th>0</th><td>Track ID</td><td>key</td></tr><tr><th>1</th><td>2571</td><td>integer</td></tr><tr><th>2</th><td>Name</td><td>key</td></tr><tr><th>3</th><td>Colors</td><td>string</td></tr><tr><th>4</th><td>Artist</td><td>key</td></tr><tr><th>...</th><td>...</td><td>...</td></tr><tr><th>61</th><td>726B801143FC336C</td><td>string</td></tr><tr><th>62</th><td>Track Type</td><td>key</td></tr><tr><th>63</th><td>Remote</td><td>string</td></tr><tr><th>64</th><td>Apple Music</td><td>key</td></tr><tr><th>65</th><td>None</td><td>true</td></tr></tbody></table><p>66 rows × 2 columns</p></div><p>If you examine the XML file more carefully, you will notice that not all tracks contain the same number of features. For example, some classical songs might include &ldquo;Movement Count&rdquo;, &ldquo;Movement Name&rdquo;, and &ldquo;Movement Number&rdquo; features, but those features might not be in tracks from other genres.</p><p>To include all features from every single song in the library, I will be parsing through every single track and its features in the &ldquo;Tracks&rdquo; node using list comprehension.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>columns</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span> 
+    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>])</span> 
+    <span class=k>for</span> <span class=n>j</span><span class=p>,</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>])</span> 
+    <span class=k>if</span> <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>tag</span> <span class=o>==</span> <span class=s1>&#39;key&#39;</span>
+<span class=p>]</span>
+
+<span class=n>columns</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span><span class=nb>list</span><span class=p>(</span><span class=nb>set</span><span class=p>(</span><span class=n>columns</span><span class=p>)))</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># List of all columns in the library</span>
+<span class=n>columns</span>
+</code></pre></div><pre><code>['Album',
+ 'Album Artist',
+ 'Album Loved',
+ 'Apple Music',
+ 'Artist',
+ 'Artwork Count',
+ 'Bit Rate',
+ 'Clean',
+ 'Comments',
+ 'Compilation',
+ 'Composer',
+ 'Date Added',
+ 'Date Modified',
+ 'Disc Count',
+ 'Disc Number',
+ 'Explicit',
+ 'Genre',
+ 'Grouping',
+ 'HD',
+ 'Has Video',
+ 'Kind',
+ 'Loved',
+ 'Matched',
+ 'Movement Count',
+ 'Movement Name',
+ 'Movement Number',
+ 'Music Video',
+ 'Name',
+ 'Part Of Gapless Album',
+ 'Persistent ID',
+ 'Play Count',
+ 'Play Date',
+ 'Play Date UTC',
+ 'Playlist Only',
+ 'Release Date',
+ 'Sample Rate',
+ 'Size',
+ 'Skip Count',
+ 'Skip Date',
+ 'Sort Album',
+ 'Sort Album Artist',
+ 'Sort Artist',
+ 'Sort Composer',
+ 'Sort Name',
+ 'Total Time',
+ 'Track Count',
+ 'Track ID',
+ 'Track Number',
+ 'Track Type',
+ 'Work',
+ 'Year']
+</code></pre><p>Also, you will notice that some features of the track have boolean values in the XML files. If you try to access the boolean value by using <code>.text</code> attribute, you will get &ldquo;None&rdquo; the boolean values are in <code>.tag</code> attribute.</p><p>I will be using <code>collections.defaultdict</code> to store all the data in &ldquo;Tracks&rdquo; node of the XML file. Each feature will the key of defaultdict and the value will be a list containing all the track values for that feature. If the track we&rsquo;re iterating doesn&rsquo;t have a particular feature, <code>np.nan</code> will be added to the feature list.</p><p>If you don&rsquo;t add <code>np.nan</code>, you will get an &ldquo;ValueError: arrays must all be same length&rdquo; when you try to create pandas DataFrame object later.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>data</span> <span class=o>=</span> <span class=n>defaultdict</span><span class=p>(</span><span class=nb>list</span><span class=p>)</span>
+
+<span class=n>bool_columns</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=s1>&#39;Album Loved&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Apple Music&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Clean&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Compilation&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Explicit&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;HD&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Has Video&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Loved&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Matched&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Music Video&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Part Of Gapless Album&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Playlist Only&#39;</span>
+<span class=p>]</span>
+
+<span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>]):</span>
+    <span class=n>temp_columns</span> <span class=o>=</span> <span class=nb>list</span><span class=o>.</span><span class=n>copy</span><span class=p>(</span><span class=n>columns</span><span class=p>)</span>
+    <span class=k>if</span> <span class=n>i</span> <span class=o>%</span> <span class=mi>2</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
+        <span class=k>for</span> <span class=n>j</span><span class=p>,</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>]):</span>
+             <span class=k>if</span> <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>tag</span> <span class=o>==</span> <span class=s1>&#39;key&#39;</span><span class=p>:</span>
+                <span class=k>if</span> <span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span> <span class=ow>in</span> <span class=n>bool_columns</span><span class=p>:</span>
+                    <span class=n>data</span><span class=p>[</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>tag</span><span class=p>)</span>
+                    <span class=n>temp_columns</span><span class=o>.</span><span class=n>remove</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span><span class=p>)</span>
+                <span class=k>else</span><span class=p>:</span>
+                    <span class=n>data</span><span class=p>[</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>text</span><span class=p>)</span>
+                    <span class=n>temp_columns</span><span class=o>.</span><span class=n>remove</span><span class=p>(</span><span class=n>root</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=mi>17</span><span class=p>][</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>.</span><span class=n>text</span><span class=p>)</span>
+        <span class=k>for</span> <span class=n>column</span> <span class=ow>in</span> <span class=n>temp_columns</span><span class=p>:</span>
+            <span class=n>data</span><span class=p>[</span><span class=n>column</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>nan</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Every feature has the same amount of elements</span>
+<span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>data</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+    <span class=k>print</span><span class=p>(</span><span class=n>k</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>v</span><span class=p>))</span>
+</code></pre></div><pre><code>Track ID 6724
+Name 6724
+Artist 6724
+Album Artist 6724
+Album 6724
+Genre 6724
+Kind 6724
+Size 6724
+Total Time 6724
+Disc Number 6724
+Disc Count 6724
+Track Number 6724
+Track Count 6724
+Year 6724
+Date Modified 6724
+Date Added 6724
+Bit Rate 6724
+Sample Rate 6724
+Play Count 6724
+Play Date 6724
+Play Date UTC 6724
+Skip Count 6724
+Skip Date 6724
+Release Date 6724
+Loved 6724
+Album Loved 6724
+Artwork Count 6724
+Sort Album 6724
+Sort Artist 6724
+Sort Name 6724
+Persistent ID 6724
+Track Type 6724
+Apple Music 6724
+Clean 6724
+Comments 6724
+Compilation 6724
+Composer 6724
+Explicit 6724
+Grouping 6724
+HD 6724
+Has Video 6724
+Matched 6724
+Movement Count 6724
+Movement Name 6724
+Movement Number 6724
+Music Video 6724
+Part Of Gapless Album 6724
+Playlist Only 6724
+Sort Album Artist 6724
+Sort Composer 6724
+Work 6724
+</code></pre><h2 id=creating-pandas-dataframe-object-using-data>Creating pandas DataFrame object using <code>data</code></h2><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+</code></pre></div><h2 id=converting-column-data-types>Converting column data types</h2><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Converting numeric columns</span>
+
+<span class=n>numeric_columns</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=s1>&#39;Artwork Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Bit Rate&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Disc Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Disc Number&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Movement Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Movement Number&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Play Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Play Date&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Sample Rate&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Size&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Skip Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Track Count&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Track ID&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Track Number&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Year&#39;</span>
+<span class=p>]</span>
+
+<span class=n>df</span><span class=p>[</span><span class=n>numeric_columns</span><span class=p>]</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=n>numeric_columns</span><span class=p>]</span><span class=o>.</span><span class=n>apply</span><span class=p>(</span><span class=n>pd</span><span class=o>.</span><span class=n>to_numeric</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Converting date columns</span>
+
+<span class=n>date_columns</span> <span class=o>=</span> <span class=p>[</span>
+    <span class=s1>&#39;Date Added&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Date Modified&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Play Date UTC&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Release Date&#39;</span><span class=p>,</span>
+    <span class=s1>&#39;Skip Date&#39;</span>
+<span class=p>]</span>
+
+<span class=n>df</span><span class=p>[</span><span class=n>date_columns</span><span class=p>]</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=n>date_columns</span><span class=p>]</span><span class=o>.</span><span class=n>apply</span><span class=p>(</span><span class=n>pd</span><span class=o>.</span><span class=n>to_datetime</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># http://joabj.com/Writing/Tech/Tuts/Java/iTunes-PlayDate.html</span>
+<span class=c1># Apparently Apple uses a different Unix epoch time</span>
+
+<span class=n>df</span><span class=p>[</span><span class=s1>&#39;Play Date&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>to_datetime</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Play Date&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=mi>2082826800</span><span class=p>,</span> <span class=n>unit</span><span class=o>=</span><span class=s1>&#39;s&#39;</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># &#39;Total Time&#39; column values need to be converted to Timedelta values</span>
+
+<span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>apply</span><span class=p>(</span><span class=n>pd</span><span class=o>.</span><span class=n>to_numeric</span><span class=p>)</span>
+<span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>to_timedelta</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>],</span> <span class=n>unit</span><span class=o>=</span><span class=s1>&#39;ms&#39;</span><span class=p>)</span>
+</code></pre></div><h2 id=itunes-library-analysis>iTunes Library Analysis</h2><p>Because I have some track information in Korean and Japanese, I will have to set a custom font for matplotlib.</p><p>Chinese, Japanese, and Korean texts will not show in matplotlib plots properly unless a compatible font is used.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=c1># Setting matplotlib custom font</span>
+
+<span class=n>font_location</span> <span class=o>=</span> <span class=s1>&#39;C:/Windows/Fonts/gulim.ttc&#39;</span>
+<span class=n>font_name</span> <span class=o>=</span> <span class=n>fm</span><span class=o>.</span><span class=n>FontProperties</span><span class=p>(</span><span class=n>fname</span><span class=o>=</span><span class=n>font_location</span><span class=p>)</span><span class=o>.</span><span class=n>get_name</span><span class=p>()</span>
+<span class=n>matplotlib</span><span class=o>.</span><span class=n>rc</span><span class=p>(</span><span class=s1>&#39;font&#39;</span><span class=p>,</span> <span class=n>family</span><span class=o>=</span><span class=n>font_name</span><span class=p>)</span>
+</code></pre></div><h3 id=top-10-most-played-songs---play-count--skip-count>Top 10 Most Played Songs - Play Count & Skip Count</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=p>[[</span><span class=s1>&#39;Name&#39;</span><span class=p>,</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=s1>&#39;Skip Count&#39;</span><span class=p>]]</span> \
+<span class=o>.</span><span class=n>sort_values</span><span class=p>(</span><span class=n>by</span><span class=o>=</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=n>ascending</span><span class=o>=</span><span class=bp>False</span><span class=p>)</span> \
+<span class=o>.</span><span class=n>head</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span> \
+<span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>kind</span><span class=o>=</span><span class=s1>&#39;barh&#39;</span><span class=p>,</span> <span class=n>x</span><span class=o>=</span><span class=s1>&#39;Name&#39;</span><span class=p>,</span> <span class=n>y</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=s1>&#39;Skip Count&#39;</span><span class=p>])</span>
+
+<span class=n>ax</span><span class=o>.</span><span class=n>invert_yaxis</span><span class=p>()</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_24_0.png alt=png></figure></p><h3 id=top-10-most-skipped-songs---play-count--skip-count>Top 10 Most Skipped Songs - Play Count & Skip Count</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=p>[[</span><span class=s1>&#39;Name&#39;</span><span class=p>,</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=s1>&#39;Skip Count&#39;</span><span class=p>]]</span> \
+<span class=o>.</span><span class=n>sort_values</span><span class=p>(</span><span class=n>by</span><span class=o>=</span><span class=s1>&#39;Skip Count&#39;</span><span class=p>,</span> <span class=n>ascending</span><span class=o>=</span><span class=bp>False</span><span class=p>)</span> \
+<span class=o>.</span><span class=n>head</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span> \
+<span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>kind</span><span class=o>=</span><span class=s1>&#39;barh&#39;</span><span class=p>,</span> <span class=n>x</span><span class=o>=</span><span class=s1>&#39;Name&#39;</span><span class=p>,</span> <span class=n>y</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=s1>&#39;Skip Count&#39;</span><span class=p>])</span>
+
+<span class=n>ax</span><span class=o>.</span><span class=n>invert_yaxis</span><span class=p>()</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_26_0.png alt=png></figure></p><h3 id=top-5-artists-by-play-count>Top 5 Artists by Play Count</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=o>.</span><span class=n>groupby</span><span class=p>(</span><span class=n>by</span><span class=o>=</span><span class=s1>&#39;Artist&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>sum</span><span class=p>()[</span><span class=s1>&#39;Play Count&#39;</span><span class=p>]</span> \
+<span class=o>.</span><span class=n>sort_values</span><span class=p>(</span><span class=n>ascending</span><span class=o>=</span><span class=bp>False</span><span class=p>)[:</span><span class=mi>5</span><span class=p>]</span> \
+<span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>kind</span><span class=o>=</span><span class=s1>&#39;barh&#39;</span><span class=p>)</span>
+
+<span class=n>ax</span><span class=o>.</span><span class=n>invert_yaxis</span><span class=p>()</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_28_0.png alt=png></figure></p><h3 id=top-10-genres-by-track-count>Top 10 Genres by Track Count</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=s1>&#39;Genre&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>value_counts</span><span class=p>()[</span><span class=mi>0</span><span class=p>:</span><span class=mi>10</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>kind</span><span class=o>=</span><span class=s1>&#39;barh&#39;</span><span class=p>)</span>
+
+<span class=n>ax</span><span class=o>.</span><span class=n>invert_yaxis</span><span class=p>()</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_30_0.png alt=png></figure></p><h3 id=top-10-genres-by-play-count>Top 10 Genres by Play Count</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=o>.</span><span class=n>groupby</span><span class=p>(</span><span class=n>by</span><span class=o>=</span><span class=s1>&#39;Genre&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span> \
+<span class=o>.</span><span class=n>sort_values</span><span class=p>(</span><span class=n>by</span><span class=o>=</span><span class=s1>&#39;Play Count&#39;</span><span class=p>,</span> <span class=n>ascending</span><span class=o>=</span><span class=bp>False</span><span class=p>)[</span><span class=s1>&#39;Play Count&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>:</span><span class=mi>10</span><span class=p>]</span> \
+<span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>kind</span><span class=o>=</span><span class=s1>&#39;barh&#39;</span><span class=p>);</span>
+
+<span class=n>ax</span><span class=o>.</span><span class=n>invert_yaxis</span><span class=p>()</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_32_0.png alt=png></figure></p><h3 id=converting-total-time-column-from-timedelta-values-to-float-values>Converting &ldquo;Total Time&rdquo; column from Timedelta values to float values</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>print</span><span class=p>(</span><span class=s1>&#39;Method #1 : seconds&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=s1>&#39;timedelta64[s]&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>:</span><span class=mi>3</span><span class=p>],</span> <span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=s1>&#39;Method #1 : minutes&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=s1>&#39;timedelta64[m]&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>:</span><span class=mi>3</span><span class=p>],</span> <span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=s1>&#39;Method #2 : minutes&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>:</span><span class=mi>3</span><span class=p>]</span><span class=o>/</span><span class=n>pd</span><span class=o>.</span><span class=n>Timedelta</span><span class=p>(</span><span class=n>minutes</span><span class=o>=</span><span class=mi>1</span><span class=p>),</span> <span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=s1>&#39;Method #2 : number of 1 minute 30 seconds in each song duration&#39;</span><span class=p>)</span>
+<span class=k>print</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>:</span><span class=mi>3</span><span class=p>]</span><span class=o>/</span><span class=n>pd</span><span class=o>.</span><span class=n>Timedelta</span><span class=p>(</span><span class=n>minutes</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span><span class=n>seconds</span><span class=o>=</span><span class=mi>30</span><span class=p>))</span>
+</code></pre></div><pre><code>Method #1 : seconds
+0    218.0
+1    203.0
+2    218.0
+Name: Total Time, dtype: float64 
+
+Method #1 : minutes
+0    3.0
+1    3.0
+2    3.0
+Name: Total Time, dtype: float64 
+
+Method #2 : minutes
+0    3.638083
+1    3.388383
+2    3.649900
+Name: Total Time, dtype: float64 
+
+Method #2 : number of 1 minute 30 seconds in each song duration
+0    2.425389
+1    2.258922
+2    2.433267
+Name: Total Time, dtype: float64
+</code></pre><h3 id=distribution-of-total-time>Distribution of &ldquo;Total Time&rdquo;</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span><span class=o>/</span><span class=n>pd</span><span class=o>.</span><span class=n>Timedelta</span><span class=p>(</span><span class=n>minutes</span><span class=o>=</span><span class=mi>1</span><span class=p>))</span> \
+<span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>hist</span><span class=p>(</span><span class=n>bins</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mf>10.5</span><span class=p>,</span><span class=mf>0.5</span><span class=p>),</span> <span class=n>edgecolor</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>)</span>
+
+<span class=n>plt</span><span class=o>.</span><span class=n>xlabel</span><span class=p>(</span><span class=s1>&#39;Minutes&#39;</span><span class=p>);</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_36_0.png alt=png></figure></p><h3 id=distribution-of-total-time-for-loved-songs>Distribution of &ldquo;Total Time&rdquo; for &ldquo;Loved&rdquo; Songs</h3><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=p>(</span><span class=n>df</span><span class=o>.</span><span class=n>loc</span><span class=p>[</span><span class=n>df</span><span class=p>[</span><span class=s1>&#39;Loved&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;true&#39;</span><span class=p>][</span><span class=s1>&#39;Total Time&#39;</span><span class=p>]</span><span class=o>/</span><span class=n>pd</span><span class=o>.</span><span class=n>Timedelta</span><span class=p>(</span><span class=n>minutes</span><span class=o>=</span><span class=mi>1</span><span class=p>))</span> \
+<span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>hist</span><span class=p>(</span><span class=n>bins</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mf>10.5</span><span class=p>,</span><span class=mf>0.5</span><span class=p>),</span><span class=n>edgecolor</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>);</span>
+</code></pre></div><p><figure><img src=/img/itunes_library_analysis/output_38_0.png alt=png></figure></p></div></article></main><div class=next-prev><a class=prev href=https://junschoi.github.io/posts/partition_k_equal_subsets/ title="Partition to K Equal Sum Subsets">« Partition to K Equal Sum Subsets</a>
+<a class=next href=https://junschoi.github.io/posts/ftfy_guide/ title="Fixing Mojibake using Python and ftfy">Fixing Mojibake using Python and ftfy »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li><li><a href=/posts/partition_k_equal_subsets/>Partition to K Equal Sum Subsets</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

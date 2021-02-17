@@ -1,0 +1,45 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Fixing Mojibake using Python and ftfy - Jun Choi</title><meta property="og:title" content="Fixing Mojibake using Python and ftfy - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1613535736" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>Fixing Mojibake using Python and ftfy</h1><p><b>Posted
+at <time>2021-01-20 03:55:00</time>
+in
+<a href=/categories/python>Python</a></b>
+• 2 minute read<br>Tags:
+<a href=/tags/ftfy>ftfy</a>, <a href=/tags/mojibake>mojibake</a></p><div><p><figure><img src=https://upload.wikimedia.org/wikipedia/commons/1/19/Mojibakevector.png alt=Mojibake></figure></p><p>Have you ever had this problem where foreign languages appear in gibberish?</p><p>Mojibake (文字化け) occurs when someone has encoded Unicode with one standard and decoded it with a different one. The result is the garbled text that you see in the picture above. In Japanese, the word literally translates to “character changing”.</p><p>This was a problem back when Unicode wasn’t around and different countries were using their own encoding systems. The problem got worse when East Asian countries started to develop multi-byte encoding systems to include hundreds and thousands of their characters.</p><p>Thankfully, there is a python package that can easily fix Mojibake!</p><h1 id=ftfy-fixes-text-for-you>ftfy: fixes text for you</h1><p>Github: <a href=https://github.com/LuminosoInsight/python-ftfy>https://github.com/LuminosoInsight/python-ftfy</a></p><p>Documentation: <a href=https://ftfy.readthedocs.io/en/latest/>https://ftfy.readthedocs.io/en/latest/</a></p><p>According to the documentation, ftfy can understand text that was decoded as any of the following encodings:</p><ul><li>Latin-1 (ISO-8859–1)</li><li>Windows-1252 (cp1252 — used in Microsoft products)</li><li>Windows-1251 (cp1251 — the Russian version of cp1252)</li><li>Windows-1250 (cp1250 — the Eastern European version of cp1252)</li><li>ISO-8859–2 (which is not quite the same as Windows-1250)</li><li>MacRoman (used on Mac OS 9 and earlier)</li><li>cp437 (used in MS-DOS and some versions of the Windows command prompt)</li></ul><p>When it was actually intended to be decoded as one of these variable-length encodings:</p><ul><li>UTF-8</li><li>CESU-8 (what some people think is UTF-8)</li></ul><h2 id=installing-ftfy>Installing ftfy</h2><p>To install ftfy, run the following pip command:</p><pre><code>pip install ftfy
+</code></pre><h2 id=using-ftfy>Using ftfy</h2><p>The main method of ftfy is the <code>fix_text</code> method.</p><p>Documentation description: Given Unicode text as input, fix inconsistencies and glitches in it, such as mojibake.</p><p>To use this method, simply import ftfy and call the function on the characters that you wish to ungarble!</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>import</span> <span class=nn>ftfy</span>
+
+<span class=n>ftfy</span><span class=o>.</span><span class=n>fix_text</span><span class=p>(</span><span class=s1>&#39;This text should be in â€œquotesâ€</span><span class=se>\x9d</span><span class=s1>.&#39;</span><span class=p>)</span>
+</code></pre></div><pre><code>'This text should be in &quot;quotes&quot;.'
+</code></pre><p>There is another method called <code>explain_unicode</code> that can be used to break down character by character to see its category in the Unicode standard and its name in the Unicode standard.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>ftfy</span><span class=o>.</span><span class=n>explain_unicode</span><span class=p>(</span><span class=s1>&#39;(╯°□°)╯︵ ┻━┻&#39;</span><span class=p>)</span>
+</code></pre></div><pre><code>U+0028  (       [Ps] LEFT PARENTHESIS
+U+256F  ╯       [So] BOX DRAWINGS LIGHT ARC UP AND LEFT
+U+00B0  °       [So] DEGREE SIGN
+U+25A1  □       [So] WHITE SQUARE
+U+00B0  °       [So] DEGREE SIGN
+U+0029  )       [Pe] RIGHT PARENTHESIS
+U+256F  ╯       [So] BOX DRAWINGS LIGHT ARC UP AND LEFT
+U+FE35  ︵      [Ps] PRESENTATION FORM FOR VERTICAL LEFT PARENTHESIS
+U+0020          [Zs] SPACE
+U+253B  ┻       [So] BOX DRAWINGS HEAVY UP AND HORIZONTAL
+U+2501  ━       [So] BOX DRAWINGS HEAVY HORIZONTAL
+U+253B  ┻       [So] BOX DRAWINGS HEAVY UP AND HORIZONTAL
+</code></pre><p>Enjoy fixing Mojibakes!</p></div></article></main><div class=next-prev><a class=prev href=https://junschoi.github.io/posts/itunes_library_analysis/ title="iTunes Library Data Analysis using Python">« iTunes Library Data Analysis using Python</a>
+<a class=next href=https://junschoi.github.io/posts/vimium_chrome/ title="Vimium for Google Chrome">Vimium for Google Chrome »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li><li><a href=/posts/partition_k_equal_subsets/>Partition to K Equal Sum Subsets</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

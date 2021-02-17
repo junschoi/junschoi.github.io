@@ -1,0 +1,85 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Partition to K Equal Sum Subsets - Jun Choi</title><meta property="og:title" content="Partition to K Equal Sum Subsets - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1613535736" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>Partition to K Equal Sum Subsets</h1><p><b>Posted
+at <time>2020-06-06 02:58:00</time>
+in
+<a href=/categories/python>Python</a></b>
+• 3 minute read<br>Tags:
+<a href=/tags/leetcode>leetcode</a>, <a href=/tags/recursion>recursion</a></p><div><p>This is problem 698 on leetcode. The solution function below is very similar to the one that is provided by leetcode but I made some changes to the solutions function so that it also returns the subsets when it&rsquo;s possible to divide the array into k subsets.</p><p><strong>Problem Statement</strong></p><p>Given an array of integers nums and a positive integer k, find whether it&rsquo;s possible to divide this array into k non-empty subsets whose sums are all equal.</p><p>Two main keys to solve this problem:</p><ol><li>Use recursion to see if all integers from input array can be placed into k partitions without going over the target value.</li><li>Use backtracking method when adding an integer from input array goes over the target value and all partitions are filled out.</li></ol><p>Also, there are some optimizations that we can make to speed up the process or rule out certain cases</p><ol><li>Sort the array and place the largest numbers to a partition first.</li><li>If sum of all numbers divided by k equals to decimal value, return false.</li><li>If largest value in array is greater than target value, return false.</li><li>If largest value in array is equal to target value, place the value in an empty partition.</li></ol><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>canPartitionKSubsets</span><span class=p>(</span><span class=n>nums</span><span class=p>,</span> <span class=n>k</span><span class=p>):</span>
+        <span class=c1># Optimization #1</span>
+        <span class=n>nums</span><span class=o>.</span><span class=n>sort</span><span class=p>()</span>
+        
+        <span class=n>partitions</span> <span class=o>=</span> <span class=p>[[]</span> <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>k</span><span class=p>)]</span>
+        <span class=n>target</span><span class=p>,</span> <span class=n>rem</span> <span class=o>=</span> <span class=nb>divmod</span><span class=p>(</span><span class=nb>sum</span><span class=p>(</span><span class=n>nums</span><span class=p>),</span> <span class=n>k</span><span class=p>)</span>
+        
+        <span class=c1># Optimization #2</span>
+        <span class=k>if</span> <span class=n>rem</span><span class=p>:</span>
+            <span class=k>return</span> <span class=bp>False</span>
+        
+        <span class=c1># Optimization #3</span>
+        <span class=k>if</span> <span class=n>nums</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>target</span><span class=p>:</span>
+            <span class=k>return</span> <span class=bp>False</span>
+        
+        <span class=c1># Optimization #4</span>
+        <span class=k>while</span> <span class=n>nums</span> <span class=ow>and</span> <span class=n>nums</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>==</span> <span class=n>target</span><span class=p>:</span>
+            <span class=n>v</span> <span class=o>=</span> <span class=n>nums</span><span class=o>.</span><span class=n>pop</span><span class=p>()</span>
+            <span class=n>k</span> <span class=o>-=</span> <span class=mi>1</span>
+            <span class=n>partitions</span><span class=p>[</span><span class=n>k</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>v</span><span class=p>)</span>
+        
+        <span class=c1># Recursive function</span>
+        <span class=k>def</span> <span class=nf>search</span><span class=p>(</span><span class=n>partitions</span><span class=p>):</span>
+            
+            <span class=k>if</span> <span class=ow>not</span> <span class=n>nums</span><span class=p>:</span>
+                <span class=k>return</span> <span class=bp>True</span><span class=p>,</span> <span class=n>partitions</span>
+            
+            <span class=n>v</span> <span class=o>=</span> <span class=n>nums</span><span class=o>.</span><span class=n>pop</span><span class=p>()</span>
+            
+            <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>partitions</span><span class=p>)):</span>
+                <span class=k>if</span> <span class=nb>sum</span><span class=p>(</span><span class=n>partitions</span><span class=p>[</span><span class=n>i</span><span class=p>])</span> <span class=o>+</span> <span class=n>v</span> <span class=o>&lt;=</span> <span class=n>target</span><span class=p>:</span>
+                    <span class=n>partitions</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>v</span><span class=p>)</span>
+                    <span class=k>if</span> <span class=n>search</span><span class=p>(</span><span class=n>partitions</span><span class=p>):</span>
+                        <span class=k>return</span> <span class=bp>True</span><span class=p>,</span> <span class=n>partitions</span>
+                    <span class=n>partitions</span><span class=p>[</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>pop</span><span class=p>()</span>
+                <span class=k>if</span> <span class=ow>not</span> <span class=n>partitions</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>
+                    <span class=k>break</span>
+            
+            <span class=n>nums</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>v</span><span class=p>)</span>
+            <span class=k>return</span> <span class=bp>False</span>
+        
+        <span class=k>return</span> <span class=n>search</span><span class=p>(</span><span class=n>partitions</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>],</span> <span class=mi>3</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>312</span><span class=p>,</span> <span class=mi>310</span><span class=p>,</span> <span class=mi>268</span><span class=p>,</span> <span class=mi>268</span><span class=p>,</span> <span class=mi>241</span><span class=p>,</span> <span class=mi>239</span><span class=p>,</span> <span class=mi>196</span><span class=p>,</span> <span class=mi>128</span><span class=p>,</span> <span class=mi>95</span><span class=p>,</span> <span class=mi>81</span><span class=p>],</span> <span class=mi>2</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>7</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>2</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>7</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>3</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>7</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>4</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>7</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>5</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>7</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>4</span><span class=p>],</span> <span class=mi>6</span><span class=p>))</span>
+<span class=k>print</span><span class=p>(</span><span class=n>canPartitionKSubsets</span><span class=p>([</span><span class=mi>2</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>2</span><span class=p>],</span> <span class=mi>2</span><span class=p>))</span>
+</code></pre></div><pre><code>(True, [[], [0], [0]])
+(True, [[312, 241, 239, 196, 81], [310, 268, 268, 128, 95]])
+(True, [[12, 8, 7, 3], [6, 5, 5, 4, 4, 3, 2, 1]])
+(True, [[12, 8], [7, 6, 5, 2], [5, 4, 4, 3, 3, 1]])
+(True, [[12, 3], [8, 7], [6, 5, 4], [5, 4, 3, 2, 1]])
+(True, [[8, 4], [7, 5], [6, 5, 1], [4, 3, 3, 2], [12]])
+False
+False
+</code></pre></div></article></main><div class=next-prev><a class=prev href=https://junschoi.github.io/posts/linear_programming_demo/ title="Linear Programming Demo">« Linear Programming Demo</a>
+<a class=next href=https://junschoi.github.io/posts/itunes_library_analysis/ title="iTunes Library Data Analysis using Python">iTunes Library Data Analysis using Python »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li><li><a href=/posts/partition_k_equal_subsets/>Partition to K Equal Sum Subsets</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

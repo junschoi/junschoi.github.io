@@ -1,0 +1,115 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Vimium for Google Chrome - Jun Choi</title><meta property="og:title" content="Vimium for Google Chrome - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1613535736" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>Vimium for Google Chrome</h1><p><b>Posted
+at <time>2021-02-02 17:22:00</time>
+in
+<a href=/categories/technology>Technology</a></b>
+• 8 minute read<br>Tags:
+<a href=/tags/vimium>vimium</a>, <a href=/tags/chrome>chrome</a></p><div><p>For people who want to browse the web without using the mouse, I recommend getting Vimium extension for Google Chrome or Firefox. I&rsquo;ve been using Vimium extension since May 4th, 2020, and it drastically improved my web browsing experience. If you are also thinking about changing from full-sized or 80% (ten keyless) keyboard to 60% or 40% keyboard, I recommend getting Vimium or a similiar type of extention since you&rsquo;ll be operating with less keys.</p><p>Vimium provides keyboard shortcuts for navigation and control in the spirit of Vim. You can install Vimium for Google Chrome <a href="https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=en">here</a>.</p><p>There are other extensions similar to Vimium like cVim and Surfingkeys. However, after trying out all of them, I found Vimium to be the best option for the reason below.</p><p>cVim&rsquo;s <code>f</code> key, which is my most used key that opens a link in the current tab, did not work properly on Google Chrome. Also Surfingkeys' <code>f</code> key sometimes did not detect certain elements on some websites. For this reason alone, I decided to go with Vimium.</p><p>Most of information below can be found <a href=https://github.com/philc/vimium/wiki>here</a>, but I&rsquo;ve added some info that were not in the official wiki page and will be going over some features more thoroughly.</p><h2 id=basic-keyboard-shortcuts-on-vimium>Basic keyboard shortcuts on Vimium</h2><p><strong>Navigating the current page:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>?       show the help dialog for a list of all available keys
+h       scroll left
+j       scroll down
+k       scroll up
+l       scroll right
+gg      scroll to top of the page
+G       scroll to bottom of the page
+d       scroll down half a page
+u       scroll up half a page
+f       open a link in the current tab
+F       open a link in a new tab
+r       reload
+gs      view source
+i       enter insert mode -- all commands will be ignored until you hit Esc to exit
+yy      copy the current url to the clipboard
+yf      copy a link url to the clipboard
+gf      cycle forward to the next frame
+gF      focus the main/top frame
+</code></pre></div><p><strong>Navigating to new pages:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>o       Open URL, bookmark, or history entry
+O       Open URL, bookmark, history entry in a new tab
+b       Open bookmark
+B       Open bookmark in a new tab
+</code></pre></div><p><strong>Using find:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>/       enter find mode
+          -- type your search query and hit enter to search, or Esc to cancel
+n       cycle forward to the next find match
+N       cycle backward to the previous find match
+</code></pre></div><p><strong>Navigating history:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>H       go back in history
+L       go forward in history
+</code></pre></div><p><strong>Manipulating tabs:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>J, gT   go one tab left
+K, gt   go one tab right
+g0      go to the first tab
+g$      go to the last tab
+^       visit the previously-visited tab
+t       create tab
+yt      duplicate current tab
+x       close current tab
+X       restore closed tab (i.e. unwind the &#39;x&#39; command)
+T       search through your open tabs
+W       move current tab to new window
+&lt;a-p&gt;   pin/unpin current tab
+</code></pre></div><p><strong>Using marks:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>ma, mA  set local mark &#34;a&#34; (global mark &#34;A&#34;)
+`a, `A  jump to local mark &#34;a&#34; (global mark &#34;A&#34;)
+``      jump back to the position before the previous jump
+          -- that is, before the previous gg, G, n, N, / or `a
+</code></pre></div><p><strong>Additional advanced browsing commands:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>]], [[  follow the link labeled &#39;next&#39; or &#39;&gt;&#39; (&#39;previous&#39; or &#39;&lt;&#39;)
+&lt;a-f&gt;   open multiple links in a new tab
+gi      focus the first (or n-th) text input box on the page
+gu      go up one level in the URL hierarchy
+gU      go up to root of the URL hierarchy
+ge      edit the current URL
+gE      edit the current URL and open in a new tab
+zH      scroll all the way left
+zL      scroll all the way right
+v       enter visual mode; use p/P to paste-and-go, use y to yank
+V       enter visual line mode
+</code></pre></div><p><strong>Notes:</strong></p><p>Many Vimium commands accept <em>count</em> prefix.</p><p>For example,</p><ol><li>All scrolling commands like <code>j</code> & <code>k</code>. <code>2j</code> and holding <code>j</code> would scroll down twice as fast while smooth scrolling is enabled.</li><li>Commands that open new tabs or windows like <code>t</code> & <code>W</code>. <code>2yt</code> would open two new current tabs to the right of current tab.</li><li><code>H</code> & <code>L</code>.</li></ol><h2 id=custom-key-mappings>Custom key mappings</h2><p>If you wish to assign custom key mappings, you can do so on Vimium&rsquo;s options under &ldquo;Custom key mappings&rdquo;.</p><p><strong>Custom key commands:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>map key command                                 maps a key to a Vimium command.
+unmap key                                       unmaps a key.
+unmapAll                                        unmaps all bindings.
+</code></pre></div><p><strong>Examples (advanced custom commands included):</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>map r reload                                    maps the r key to reloading the page
+unmap r                                         removes any mapping for the r key
+map C LinkHints.activateMode action=hover       maps C key to mouse hovering action
+map S LinkHints.activateMode action=focus       maps S key to element focus action
+map # LinkHints.activateMode action=copy-text   maps # key to copy-text action
+map &lt;a-,&gt; moveTabLeft count=99                  maps ALT-, to move current tab to leftmost
+map &lt;a-.&gt; moveTabRight count=99                 maps ALT-. to move current tab to rightmost
+map X toggleMuteTab All                         maps X to toggle mute on all tabs
+map Y toggleMuteTab other                       maps Y to toggle mute except current tab
+map X createTab http://www.bbc.com/news         maps X to open specified URL in new tab
+map X createTab window [url_1][url_2]           maps X to open url_1 &amp; url_2 in new window
+map X createTab window                          maps X to open new window
+map X createTab incognito                       maps X to open incongito window
+</code></pre></div><p><strong>Special keys:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>&lt;c-*&gt;, &lt;a-*&gt;, &lt;m-*&gt;                             for control, alt, and meta (command on Mac)
+&lt;left&gt;, &lt;right&gt;, &lt;up&gt;, &lt;down&gt;                   for the arrow keys
+&lt;f1&gt; through &lt;f12&gt;                              for the function keys
+&lt;space&gt;                                         for the space key
+&lt;tab&gt;                                           for the tab key
+&lt;enter&gt;                                         for the enter key
+&lt;delete&gt;                                        for the delete key
+&lt;backspace&gt;                                     for the backspace key
+&lt;insert&gt;                                        for the insert key
+&lt;home&gt;                                          for the home key
+&lt;end&gt;                                           for the end key
+</code></pre></div><h2 id=disabling-vimium>Disabling Vimium</h2><h3 id=partially-disabling-vimium>Partially disabling Vimium</h3><p>In this case, Vimium is enabled as normal, except for the three listed keys. These are passed through to the underlying page. Here, we&rsquo;re using Gmail&rsquo;s native <code>j</code>/<code>k</code> bindings, and Gmail&rsquo;s native help screen. All other Vimium keys are handled by Vimium, as usual.</p><img src=https://cloud.githubusercontent.com/assets/2641335/7896326/3bac8804-06ad-11e5-82c6-04ed0ba5bbac.png alt=Vimium_disable_1><h3 id=completely-disabling-vimium>Completely disabling Vimium</h3><p>In this case, Vimium is completely disabled since the list of excluded keys is empty.</p><img src=https://cloud.githubusercontent.com/assets/2641335/7896332/86093816-06ad-11e5-83b6-76f51218cc7a.png alt=Vimium_disable_2><h3 id=temporarily-disabling-vimium>Temporarily disabling Vimium</h3><p>In insert mode, all Vimium bindings are temporarily disabled, and all keystrokes (except <kbd>Escape</kbd>) are passed through to the underlying page. Enter insert mode with <code>i</code>, and leave insert mode with <kbd>Escape</kbd>.</p><p>Personally, I enable Vimium on every website and enter insert mode to use the webpage&rsquo;s native or another extension&rsquo;s shortcut keys (for example, shortcuts for Reddit Enhancement Suite, Gmail, Jupyter Notebook, Youtube, etc). It&rsquo;s worth noting that when you have both Reddit Enhancement Suite extension and Vimium extension installed, Vimium takes over Reddit Enhancement Suite shortcuts by default, and you have to use insert mode to use Reddit Enhancement Suite&rsquo;s shortcuts.</p><h2 id=passnextkey>passNextKey</h2><p>Vimium uses the <kbd>Escape</kbd> key to exit insert mode. Some web sites use the <kbd>Escape</kbd> key to perform actions (like closing a window) from within inputs. For such web sites, Vimium effectively blocks the site’s own functionality. One example of this is the Messenger popups used by Facebook.</p><p>The <code>passNextKey</code> command solves this problem.</p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>map &lt;c-]&gt; passNextKey
+</code></pre></div><p>Now, <kbd>CTRL</kbd>-<kbd>]</kbd>-<kbd>Escape</kbd> passes the <kbd>Escape</kbd> key to the web page itself. In the case of Facebook, this closes the Messenger popup.</p><p>Another example would be if you want to use Youtube&rsquo;s fullscreen shortcut <code>f</code> without going into insert mode since entering insert mode creates a message box on the bottom right corner of the screen. You would enter <kbd>CTRL</kbd>-<kbd>]</kbd>-<kbd>F</kbd> to fullscreen Youtube video without going into insert mode.</p><h2 id=visual-mode--carat-mode>Visual mode & carat mode</h2><p>Visual mode is used for selecting text on the page and caret mode is used for changing the starting point for selecting text on the page.</p><p>Personally, I do not find carat mode <code>c</code> to be all that useful since I can just use Vimium&rsquo;s find function <code>/</code> or Chrome&rsquo;s native find function <kbd>CTRL</kbd>-<kbd>F</kbd> to select the starting text position.</p><p>However, I do find Vimium&rsquo;s visual mode <code>v</code> and visual line mode <code>V</code> to be quite useful since I can implement number of vim-like movements after selecting starting text position. For example: <code>j</code>, <code>k</code>, <code>h</code>, <code>l</code>, <code>w</code>, <code>e</code>, <code>b</code>, etc. Counts are also supported; for example, <code>3e</code>.</p><p><strong>Exiting visual mode:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>esc       exit visual mode
+y         yank the selected text to the clipboard
+p/P       send the selected text to the default search engine in current tab/new tab
+</code></pre></div><p>In visual mode, <code>o</code> swaps the anchor and the focus, so you can also move the &ldquo;other end&rdquo; of the selection.</p><p><strong>Scrolling in visual mode:</strong></p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>&lt;c-y&gt;     scroll up
+&lt;c-e&gt;     scroll down
+</code></pre></div><h2 id=personal-comments-about-vimium>Personal comments about Vimium</h2><p>I&rsquo;ve been using Vimium and Chrome shortcuts together. If there&rsquo;s a shortcut that is supported by Google Chrome, I tend to use Chrome&rsquo;s native shortcut version over Vimium&rsquo;s.</p><p>For example,</p><ol><li>I still use native Chrome shortcuts to switch tabs (<kbd>CTRL</kbd>-<kbd>NUM</kbd> & <kbd>CTRL</kbd>-<kbd>PAGEUP</kbd>/<kbd>PAGEDOWN</kbd>) but I also started to use Vimium&rsquo;s <code>J</code> and <code>K</code> to switch tabs.</li><li>I use Chrome&rsquo;s native shortcut <kbd>CTRL</kbd>-<kbd>SHIFT</kbd>-<kbd>N</kbd> to open a new incognito tab, and I have not made a custom key for opening a new incognito tab in Vimium.</li></ol><p>Overall, I recommend Vimium to anyone who wants to improve web-browsing experience and doesn&rsquo;t mind putting some time into learning new shortcuts.</p></div></article></main><div class=next-prev><a class=prev href=https://junschoi.github.io/posts/ftfy_guide/ title="Fixing Mojibake using Python and ftfy">« Fixing Mojibake using Python and ftfy</a>
+<a class=next href=https://junschoi.github.io/posts/tesseract_demo/ title="Optical Character Recognition using Python and Tesseract">Optical Character Recognition using Python and... »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li><li><a href=/posts/partition_k_equal_subsets/>Partition to K Equal Sum Subsets</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>

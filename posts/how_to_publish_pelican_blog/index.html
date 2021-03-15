@@ -1,0 +1,129 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=HandheldFriendly content="True"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>How to Publish a Pelican Blog using Github Pages - Jun Choi</title><meta property="og:title" content="How to Publish a Pelican Blog using Github Pages - Jun Choi"><meta name=description content="Jun Choi's Blog"><meta property="og:description" content="Jun Choi's Blog"><meta name=author content="Jun Choi"><meta property="og:site_name" content="Jun Choi"><meta property="og:type" content="blog"><meta property="og:url" content="https://junschoi.github.io/"><style type=text/css>body{font-family:Iosevka,monospace}</style><link rel=stylesheet href="https://junschoi.github.io/style.css?cb=1615795499" integrity></head><body><header><div class=name-and-subtitle><div><a class=site-title href=https://junschoi.github.io/>Jun Choi</a></div></div><p><nav><a href=https://junschoi.github.io/><b>Home</b></a>
+| <a href=/about/><b>About</b></a>
+| <a href=/posts/><b>Posts</b></a>
+| <a href=/categories/><b>Categories</b></a>
+| <a href=/tags/><b>Tags</b></a>
+| <a href=/index.xml><b>RSS</b></a>
+| <a id=toggle_search href=javascript:void()><b>Search</b></a></nav></p><div class=hidden id=search-container><form class=search method=get><input id=search-query type=search placeholder=Search... disabled></form><div id=search-results class=search-results><p id=search-results-loading>Loading search index...</p></div></div><script src=https://unpkg.com/lunr/lunr.js></script><script src=https://junschoi.github.io/search.min.js type=text/javascript></script></header><main><article><h1>How to Publish a Pelican Blog using Github Pages</h1><p><b>Posted
+at <time>2020-05-02 15:06:00</time>
+in
+<a href=/categories/python>Python</a></b>
+• 7 minute read<br>Tags:
+<a href=/tags/pelican>pelican</a>, <a href=/tags/github>github</a></p><div><div class="admonition warning"><p class="first admonition-title">Warning</p><p>This article may contain outdated information. Also, I have migrated from <a class="reference external" href=https://getpelican.com>Pelican</a> to <a class="reference external" href=https://gohugo.io>Hugo</a>.</p></div><p>You can read pelican official documentation <a href=https://docs.getpelican.com/en/3.6.3/index.html>here</a>.</p><p>In this tutorial, I will be showing how to use pelican to create your own blog and how to publish your blog on Github Pages.</br>Some paragraphs will be directly borrowed from other websites which I will reference as footnotes.</p><h2 id=about-pelican--github-pages>About Pelican & Github Pages</h2><h3 id=pelican>Pelican</h3><p>Pelican is a static site generator implemented in Python that combines Jinja templates with content written in Markdown or reStructuredText to produce websites.<sup>1</sup></p><p>There are many other static site generators, and each one of them has its pros and cons. Because I am most familiar with Python, I was left with two options: Pelican and Nikola. At first I was drawn to Nikola because it supported Jupyter notebook files natively (I later found out that Pelican has a plugin for Jupyter Notebook). However, I found Nikola&rsquo;s basic themes to be rather bland so I switched over to Pelican, which offered more aethetically pleasing themes, and Pelican is more popular than Nikola, so I figured Pelican would have more resources if I ever needed any help. I suggest you check out both Pelican and Nikola!</p><p>Note that both Nikola and Pelican are mostly geared towards creating a blogging website. If you don&rsquo;t want to make a blogging website, I suggest you check out other website generators.</p><h3 id=github-pages>Github Pages</h3><p>GitHub Pages is a static site hosting service that takes HTML, CSS, and JavaScript files straight from a repository on GitHub, optionally runs the files through a build process, and publishes a website. You can see examples of GitHub Pages sites in the GitHub Pages examples collection.<sup>2</sup></p><h2 id=prerequisites>Prerequisites</h2><p>Disclaimer: I am using Windows 10 in this tutorial.</p><ol><li>Install Python. I highly suggest installing <a href=https://www.anaconda.com/>Anaconda</a> distribution and adding Anaconda to Windows PATH.</li><li>Create a <a href=https://github.com/>Github</a> account.</li><li>Install <a href=https://git-scm.com/downloads>Git</a> and add Git to Windows PATH.</li></ol><h2 id=installing-pelican>Installing Pelican</h2><ol><li>Open command prompt as administrator and type the following line. <code>pip install pelican</code></br></li><li>Create a folder for your pelican blog files. <code>mkdir &lt;your-github-username>.github.io</code></br></li><li>Go to your blog directory. <code>cd &lt;your-github-username>.github.io</code></br></li><li>Create your blog with pelican with the following line. <code>pelican-quickstart</code></br></li></ol><p><code>pelican-quickstart</code> will prompt you with a series of questions. Here is how I answered them.</p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>&gt; Where do you want to create your new web site? [.] .
+&gt; What will be the title of this web site? Jun Choi
+&gt; Who will be the author of this web site? Jun Choi
+&gt; What will be the default language of this web site? [en] en
+&gt; Do you want to specify a URL prefix? e.g., http://example.com (Y/n) n 
+&gt; Do you want to enable article pagination? (Y/n) Y 
+&gt; How many articles per page do you want? [10] 10
+&gt; What is your time zone? [Europe/Paris] America/New_York
+&gt; Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n) Y
+&gt; Do you want an auto-reload &amp; simpleHTTP script to assist with theme and site development? (Y/n) Y
+&gt; Do you want to upload your website using FTP? (y/N) N
+&gt; Do you want to upload your website using SSH? (y/N) N
+&gt; Do you want to upload your website using Dropbox? (y/N) N
+&gt; Do you want to upload your website using S3? (y/N) N
+&gt; Do you want to upload your website using Rackspace Cloud Files? (y/N) N
+&gt; Do you want to upload your website using GitHub Pages? (y/N) y
+&gt; Is this your personal page (username.github.io)? (y/N) y
+&gt; Done. Your new project is available at C:\Users\junsc\junschoi.github.io
+</code></pre></div><p>After answering these questions, your pelican files will be available at your blog directory, in my case, at <code>C:\Users\junsc\junschoi.github.io</code></p><h2 id=creating-your-first-post>Creating Your First Post</h2><p>Pelican won&rsquo;t let you publish your website until you have at least one post so let&rsquo;s make your first blog post right now!</p><ol><li>Go to your blog&rsquo;s content directory and make a Markdown file named <code>first-post.md</code> or a reStructuredText file named <code>first-post.rst</code>.</br></li><li>Open <code>first-post.md</code> file using text editor of your choice and type in the metadata for your first post.</li></ol><h3 id=markdown>Markdown</h3><p>Here is an example of <code>first-post.md</code>.</p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>Title: My First Post
+Date: 2020-05-02 17:00
+Modified: 2020-05-02 17:13
+Category: Misc
+Tags: misc, python
+Slug: my-first-post
+Authors: Jun Choi
+Summary: This is my first post.
+
+This is my first post. Write your content here. 
+</code></pre></div><h3 id=restructuredtext>reStructuredText</h3><p>Here is an example of <code>first-post.rst</code>.</p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>My First Post
+##############
+
+:date: 2020-05-02 17:00
+:modified: 2020-05-02 17:13
+:tags: misc, python
+:category: Misc
+:slug: my-first-post
+:authors: Jun Choi
+:summary: This is my first post
+
+This is my first post. Write your content here.
+</code></pre></div><h2 id=attaching-an-image-to-your-post>Attaching an Image to Your Post</h2><p>Here&rsquo;s how you can include an image on your post.</p><ol><li>Open command prompt on your blog&rsquo;s content directory and create a folder named &ldquo;images&rdquo; (for easy reference). <code>mkdir images</code></br></li><li>Go to your blog directory and open <code>pelicanconf.py</code> file. Add the following line. <code>STATIC_PATHS = ['images']</code></br></li><li>Add the image file inside your newly created &ldquo;images&rdquo; directory.</br></li><li>Open your post file and reference the image file to your post.</br></li></ol><h3 id=markdown-1>Markdown</h3><div class=highlight><pre class=chroma><code class=language-text data-lang=text>![alternate text](/images/image_name.jpg)
+</code></pre></div><h3 id=restructuredtext-1>reStructuredText</h3><div class=highlight><pre class=chroma><code class=language-text data-lang=text>.. image:: /images/image_name.jpg
+    :width: 200px
+    :align: center
+    :height: 100px
+    :alt: alternate text
+</code></pre></div><h2 id=installing-jupyter-notebook-plugin-for-pelican>Installing Jupyter Notebook Plugin for Pelican</h2><p>If you want to post your blog entry using Jupyter Notebook file <code>.ipynb</code>, you have to install a plugin for Jupyter Notebook since Pelican does not support <code>.ipynb</code> format natively.</p><p>You can read more about Jupyter Notebook plugin <a href=https://github.com/danielfrg/pelican-ipynb>here</a>.</p><ol><li>Run command prompt on your blog directory and enter the following line. <code>git init</code></br></li><li>Create a folder named &ldquo;plugins&rdquo; in your blog directory. <code>mkdir plugins</code></br></li><li>Add Jupyter Notebook plugin for Pelican by running the following line. <code>git submodule add git://github.com/danielfrg/pelican-ipynb.git plugins/ipynb</code></br></li><li>Open <code>pelicanconf.py</code> on your blog directory and add the following lines to the file.</br></li></ol><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>MARKUP</span> <span class=o>=</span> <span class=p>(</span><span class=s1>&#39;md&#39;</span><span class=p>,</span> <span class=s1>&#39;ipynb&#39;</span><span class=p>)</span>
+<span class=n>PLUGIN_PATHS</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;./plugins&#39;</span><span class=p>]</span>
+<span class=n>PLUGINS</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;ipynb.markup&#39;</span><span class=p>]</span>
+<span class=n>IGNORE_FILES</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;.ipynb_checkpoints&#39;</span><span class=p>]</span>
+</code></pre></div><h3 id=posting-jupyter-notebook-file-on-your-blogsup3sup>Posting Jupyter Notebook File on Your Blog<sup>3</sup></h3><p>Place the <code>.ipynb</code> file in the content folder and create a new file with the same name as the ipython notebook with extension <code>.nbdata</code>. For example if you have <code>my_post.ipynb</code> create a <code>my_post.nbdata</code>.
+The <code>.nbdata</code> should contain the metadata like a regular Markdown based article:</p><pre>
+<code>Title:
+Slug:
+Date:
+Category:
+Tags:
+Author:
+Summary:
+
+</code></pre><p>Note the empty line at the end, you need that.</p><p>You can also specify to only include a subset of notebook cells with the Subcells metadata item. It should contain the index (starting at 0) of first and last cell to include (use None for &ldquo;unlimited&rdquo;). For example, to skip the first two cells:</p><div class=highlight><pre class=chroma><code class=language-text data-lang=text>Subcells: [2, None]
+</code></pre></div><h2 id=configuring-your-blog>Configuring Your Blog</h2><p>You can read the documentation for <code>pelicanconf.py</code> (located on your blog&rsquo;s directory) settings <a href=https://docs.getpelican.com/en/stable/settings.html>here</a>.</p><p>Below is my <code>pelicanconf.py</code> configuration for your reference.</br></p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>__future__</span> <span class=kn>import</span> <span class=n>unicode_literals</span>
+
+<span class=n>AUTHOR</span> <span class=o>=</span> <span class=s1>&#39;Jun Choi&#39;</span>
+<span class=n>SITENAME</span> <span class=o>=</span> <span class=s1>&#39;Jun Choi&#39;</span>
+<span class=n>SITEURL</span> <span class=o>=</span> <span class=s1>&#39;http://junschoi.github.io&#39;</span>
+<span class=n>SITETITLE</span> <span class=o>=</span> <span class=s1>&#39;Jun Choi&#39;</span>
+<span class=n>COPYRIGHT_NAME</span> <span class=o>=</span> <span class=s1>&#39;Jun Choi&#39;</span>
+<span class=n>COPYRIGHT_YEAR</span> <span class=o>=</span> <span class=s1>&#39;2020&#39;</span>
+
+<span class=n>CC_LICENSE</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s2>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;Creative Commons Attribution-ShareAlike&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;4.0&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;slug&#34;</span><span class=p>:</span> <span class=s2>&#34;by-sa&#34;</span>
+<span class=p>}</span>
+
+<span class=n>PATH</span> <span class=o>=</span> <span class=s1>&#39;content&#39;</span>
+<span class=n>STATIC_PATHS</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;site_img&#39;</span><span class=p>]</span>
+
+<span class=n>TIMEZONE</span> <span class=o>=</span> <span class=s1>&#39;America/New_York&#39;</span>
+
+<span class=n>DEFAULT_LANG</span> <span class=o>=</span> <span class=s1>&#39;En&#39;</span>
+
+<span class=c1># Feed generation is usually not desired when developing</span>
+<span class=n>FEED_ALL_ATOM</span> <span class=o>=</span> <span class=bp>None</span>
+<span class=n>CATEGORY_FEED_ATOM</span> <span class=o>=</span> <span class=bp>None</span>
+<span class=n>TRANSLATION_FEED_ATOM</span> <span class=o>=</span> <span class=bp>None</span>
+<span class=n>AUTHOR_FEED_ATOM</span> <span class=o>=</span> <span class=bp>None</span>
+<span class=n>AUTHOR_FEED_RSS</span> <span class=o>=</span> <span class=bp>None</span>
+
+<span class=c1># Blogroll</span>
+<span class=n>LINKS</span> <span class=o>=</span> <span class=p>((</span><span class=s1>&#39;Archives&#39;</span><span class=p>,</span> <span class=s1>&#39;/archives.html&#39;</span><span class=p>),</span>
+         <span class=p>(</span><span class=s1>&#39;Categories&#39;</span><span class=p>,</span><span class=s1>&#39;/categories.html&#39;</span><span class=p>)</span>
+<span class=p>)</span>
+
+<span class=c1># Social widget</span>
+<span class=n>SOCIAL</span> <span class=o>=</span> <span class=p>((</span><span class=s1>&#39;github&#39;</span><span class=p>,</span> <span class=s1>&#39;http://github.com/junschoi&#39;</span><span class=p>),</span>
+          <span class=p>(</span><span class=s1>&#39;instagram&#39;</span><span class=p>,</span> <span class=s1>&#39;http://instagram.com/junschoi&#39;</span><span class=p>),</span>
+          <span class=p>(</span><span class=s1>&#39;reddit&#39;</span><span class=p>,</span> <span class=s1>&#39;https://www.reddit.com/user/junschoi&#39;</span><span class=p>),</span>
+          <span class=p>(</span><span class=s1>&#39;discord&#39;</span><span class=p>,</span> <span class=s1>&#39;http://discordapp.com/users/218950712435015681&#39;</span><span class=p>),</span>
+          <span class=p>(</span><span class=s1>&#39;twitch&#39;</span><span class=p>,</span> <span class=s1>&#39;https://twitch.tv/jsc28/&#39;</span><span class=p>))</span>
+
+<span class=n>DEFAULT_PAGINATION</span> <span class=o>=</span> <span class=mi>10</span>
+</code></pre></div><h2 id=creating-github-pages>Creating Github Pages</h2><ol><li>Log-in to your Github account.</li><li>Create a repository and name it <code>your-github-username.github.io</code>.</li><li>Open command prompt on your blog directory and run the following line. <code>git remote add origin https://github.com/&lt;your-username>/&lt;your-username>.github.io.git</code></li></ol><h2 id=installing-github-pages-import>Installing Github Pages Import</h2><p>Before you publish your posts, you have to install a package named &ldquo;Github Pages Import&rdquo;. Its documentation can be read <a href=https://github.com/davisp/ghp-import>here</a>.</br>Open command prompt as administrator and install &ldquo;Github Pages Import&rdquo; package by running the following line.</p><p><code>pip install ghp-import</code></p><h2 id=publishing-posts>Publishing Posts</h2><ol><li>Open command prompt on your blog directory.</li><li>Generate website html files from your content files by running below line. <code>pelican content</code></li><li>Use correct settings for publishing your blog website by running below line. <code>pelican content -s publishconf.py</code></li><li>Import output folder to the master branch by running below line. <code>ghp-import output -b master</code></li><li>Push content to Github Pages. <code>git push origin master</code></li></ol><p>That&rsquo;s it! You should be able to see your blog on <code>http://your-username.github.io</code>.</p><h2 id=other-pelican-guides>Other Pelican Guides</h2><p>Here are other Pelican guides that I found useful.</p><ul><li>Hackore&rsquo;s Pelican Guide: <a href=https://shaynemei.github.io/hackore/how_to_pelican.html>https://shaynemei.github.io/hackore/how_to_pelican.html</a></li><li>Rasor&rsquo;s Pelican Guide: <a href=https://rasor.github.io/using-pelican-blog-on-github-pages.html>https://rasor.github.io/using-pelican-blog-on-github-pages.html</a></li><li>Ranata&rsquo;s Pelican Guide: <a href=https://rsip22.github.io/blog/create-a-blog-with-pelican-and-github-pages.html>https://rsip22.github.io/blog/create-a-blog-with-pelican-and-github-pages.html</a></li><li>Alred&rsquo;s Pelican Guide: <a href=https://blog.justalfred.com/getting-started-with-pelican-on-github-pages.html>https://blog.justalfred.com/getting-started-with-pelican-on-github-pages.html</a></li></ul><h2 id=references>References</h2><p><sup>1</sup>: <a href=https://www.fullstackpython.com/pelican.html>https://www.fullstackpython.com/pelican.html</a></br><sup>2</sup>: <a href=https://help.github.com/en/github/working-with-github-pages/about-github-pages>https://help.github.com/en/github/working-with-github-pages/about-github-pages</a></br><sup>3</sup>: <a href=https://github.com/danielfrg/pelican-ipynb>https://github.com/danielfrg/pelican-ipynb</a></br></p></div></article></main><div class=next-prev><a class=next href=https://junschoi.github.io/posts/linear_programming_demo/ title="Linear Programming Demo">Linear Programming Demo »</a></div><aside><div><div><h3>LATEST POSTS</h3></div><div><ul><li><a href=/posts/clustering_epl_players/>Clustering English Premier League Players using K-Means</a></li><li><a href=/posts/tesseract_demo/>Optical Character Recognition using Python and Tesseract</a></li><li><a href=/posts/vimium_chrome/>Vimium for Google Chrome</a></li><li><a href=/posts/ftfy_guide/>Fixing Mojibake using Python and ftfy</a></li><li><a href=/posts/itunes_library_analysis/>iTunes Library Data Analysis using Python</a></li></ul></div></div></aside><footer><p>Find me around the web:<br><a href=https://github.com/junschoi/ target=_blank><b>Github</b></a>
+| <a href=https://www.linkedin.com/in/junschoi/ target=_blank><b>LinkedIn</b></a>
+| <a href=https://www.kaggle.com/junschoi target=_blank><b>Kaggle</b></a>
+| <a href=https://www.reddit.com/user/junsc target=_blank><b>Reddit</b></a>
+| <a href=http://discordapp.com/users/218950712435015681 target=_blank><b>Discord</b></a>
+| <a href=https://twitch.tv/jsc28/ target=_blank><b>Twitch</b></a>
+| <a href=http://instagram.com/junschoi target=_blank><b>Instagram</b></a></p><p>Built with <a href=https://gohugo.io/>Hugo</a> using
+<a href=https://github.com/sumnerevans/smol>Sumner Evans's Fork of Smol Theme</a>.
+Switch to the
+<a href=javascript:void(0) onclick="theme.switch('dark')">dark</a> |
+<a href=javascript:void(0) onclick="theme.switch('light')">light</a> |
+<a href=javascript:void(0) onclick="theme.switch('browser')">browser</a>
+theme.</p><p>&copy; 2021 <a href=https://junschoi.github.io/><b>Jun Choi</b></a>.
+This work is licensed under the
+<a href=http://creativecommons.org/licenses/by-sa/4.0/>CC BY-SA 4.0</a> license.</p></footer><script id=dark-theme-script src=https://junschoi.github.io/dark-theme.min.js data-enable-auto-detect-theme=true data-default-theme=dark type=text/javascript></script><script type=text/javascript src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></body></html>
